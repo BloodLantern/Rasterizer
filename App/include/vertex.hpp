@@ -7,10 +7,10 @@
 class Vertex
 {
 private:
-    Vector3 m_Position;
-    Vector4 m_Color;
-    Vector3 m_Normal;
-    Vector2 m_Uvs;
+    Vector3 mPosition;
+    Vector4 mColor;
+    Vector3 mNormal;
+    Vector2 mUVs;
 
 public:
     Vertex(const Vector3& position);
@@ -20,8 +20,7 @@ public:
     void SetPosition(const Vector3& position);
     void SetColor(const Vector4& color);
     void SetNormal(const Vector3& normal);
-    void SetUv(const Vector2 uv);
+    void SetUV(const Vector2 uv);
 
     void SetPositionAndNormal(const Vector3& position);
 };
-

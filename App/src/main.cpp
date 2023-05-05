@@ -16,7 +16,7 @@ void PrintPPM(float* colorBuffer, int width, int height)
     // TODO: print ppm format
 }
 
-int32_t SetupGlfw()
+int main(int argc, char** argv)
 {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -29,28 +29,19 @@ int32_t SetupGlfw()
     );
 
     if (!glfwInit())
-        return false;
+        return 1;
 
-    return true;
-}
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Rasterizer", nullptr, nullptr);;
+    if (window == nullptr)
+        return 1;
 
-GLFWwindow* CreateWindow()
-{
-    return glfwCreateWindow(800, 600, "Rasterizer", nullptr, nullptr);
-}
-
-void SetupWindow(GLFWwindow* window)
-{
     glfwMakeContextCurrent(window);
 
     gladLoadGL();
 
     glfwSwapInterval(1); // Enable vsync
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-}
 
-void SetupImGui(GLFWwindow* window)
-{
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -61,87 +52,56 @@ void SetupImGui(GLFWwindow* window)
 
     io.Fonts->AddFontDefault();
 
-    // GL 3.0 + GLSL 130
-    const char* const glslVersion = "#version 130";
-
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glslVersion);
-}
+    ImGui_ImplOpenGL3_Init("#version 130");
 
-void StartImGuiFrame()
-{
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
-
-void UpdateGlFrameBuffer(GLFWwindow* window)
-{
-    int displayW, displayH;
-    glfwGetFramebufferSize(window, &displayW, &displayH);
-    glViewport(0, 0, displayW, displayH);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void Render(GLFWwindow* window)
-{
-    ImGui::Render();
-    UpdateGlFrameBuffer(window);
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    GLFWwindow* ctxBackup = glfwGetCurrentContext();
-    ImGui::UpdatePlatformWindows();
-    ImGui::RenderPlatformWindowsDefault();
-    glfwMakeContextCurrent(ctxBackup);
-}
-
-int main(int argc, char** argv)
-{
-    if (!SetupGlfw())
-        return 1;
-
-    GLFWwindow* window = CreateWindow();
-    if (window == nullptr)
-        return 1;
-
-    SetupWindow(window);
-
-    SetupImGui(window);
-
-    const uint32_t width = 8;
-    const uint32_t height = 12;
-
-    Renderer* renderer = new Renderer(width, height);
-    Scene* scene = new Scene();
-
-    while (!glfwWindowShouldClose(window))
     {
-        glfwPollEvents();
+        Renderer renderer;
+        Scene scene;
 
-        StartImGuiFrame();
+        renderer.CreateFramebuffer();
 
-        /*ImGui::Begin("Test");
-        ImGui::Text("Hello triangles");
-        ImGui::End();*/
+        while (!glfwWindowShouldClose(window))
+        {
+            glfwPollEvents();
 
-        // Imgui stuff here
+            // Start the Dear ImGui frame
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
-        // Rendering
-        Render(window);
+            ImGui::Begin("Test");
+            ImGui::Text("Hello triangles");
+            renderer.UpdateFramebuffer();
+            ImGui::End();
 
-        glfwSwapBuffers(window);
+            // Imgui stuff here
+
+            // Rendering
+            ImGui::Render();
+            int displayW, displayH;
+            glfwGetFramebufferSize(window, &displayW, &displayH);
+            glViewport(0, 0, displayW, displayH);
+
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            GLFWwindow* ctxBackup = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(ctxBackup);
+
+            glfwSwapBuffers(window);
+        }
+
+        renderer.DestroyFramebuffer();
     }
 
-    // scnUpdate(scene, 1.f / 60.f, renderer);
+    // sceneUpdate(scene, 1.f / 60.f, renderer);
 
     // PrintPPM(colorBuffer, width, height);
-
-    delete scene;
-    delete renderer;
 
     return 0;
 }

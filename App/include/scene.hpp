@@ -8,7 +8,7 @@
 class Scene
 {
 private:
-    std::vector<Vertex> m_Vertices;
+    std::vector<Vertex> mVertices;
 
 public:
     Scene();
