@@ -22,8 +22,7 @@ Vector3 Renderer::ApplyRenderingPipeline(const Vector3 &p)
 {
     Vector4 coords = Vector4(p.x, p.y, p.z, 1.0f);
 
-    Matrix4x4 mat = mProjection * mView;
-    mat *= mModel;
+    Matrix4x4 mat = mProjection * mView * mModel;
     coords = coords * mat;
 
     coords /= coords.w;
