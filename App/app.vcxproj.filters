@@ -13,6 +13,8 @@
     <ClCompile Include="src\vertex.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="externals\src\stb_image.cpp" />
+    <ClCompile Include="src\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\src\ImGui\imstb_rectpack.h" />
@@ -20,5 +22,6 @@
     <ClInclude Include="include\vertex.hpp" />
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\scene.hpp" />
+    <ClInclude Include="include\texture.hpp" />
   </ItemGroup>
 </Project>

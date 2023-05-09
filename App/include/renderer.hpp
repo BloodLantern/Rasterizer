@@ -7,6 +7,7 @@
 #include <vector2i.hpp>
 
 #include "vertex.hpp"
+#include "texture.hpp"
 
 constexpr unsigned int width = 800;
 constexpr unsigned int height = 600;
@@ -14,6 +15,7 @@ constexpr unsigned int height = 600;
 class Renderer
 {
 private:
+    Texture mTexture;
     unsigned int mTextureID;
 
     Vector4 mColorBuffer[width * height];

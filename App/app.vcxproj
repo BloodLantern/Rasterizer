@@ -18,10 +18,12 @@
     <ClCompile Include="externals\src\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="externals\src\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="externals\src\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="externals\src\stb_image.cpp" />
     <ClCompile Include="externals\src\TinyObj\tiny_obj_loader.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -29,6 +31,7 @@
     <ClInclude Include="externals\src\ImGui\imstb_truetype.h" />
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\scene.hpp" />
+    <ClInclude Include="include\texture.hpp" />
     <ClInclude Include="include\vertex.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

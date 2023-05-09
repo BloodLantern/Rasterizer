@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 Renderer::Renderer()
+    : mTexture("assets/texture.jpeg")
 {
     CreateFramebuffer();
 }
@@ -52,18 +53,21 @@ void Renderer::DrawTriangle(Vector3 p1, const Vector3 p2, const Vector3 p3, cons
             const float denominator = (p2.y - p3.y) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.y - p3.y);
 
             const float w1 = ((p2.y - p3.y) * (x - p3.x) + (p3.x - p2.x) * (y - p3.y)) / denominator;
-            if (w1 < 0)
+            if (w1 < 0 || w1 > 1)
                 continue;
 
             const float w2 = ((p3.y - p1.y) * (x - p3.x) + (p1.x - p3.x) * (y - p3.y)) / denominator;
-            if (w2 < 0)
+            if (w2 < 0 || w2 > 1)
                 continue;
 
             const float w3 = 1 - w1 - w2;
-            if (w3 < 0)
+            if (w3 < 0 || w3 > 1)
                 continue;
 
-            const Vector4 color = v1.Color * w1 + v2.Color * w2 + v3.Color * w3;
+            Vector4 color = v1.Color * w1 + v2.Color * w2 + v3.Color * w3;
+
+            const Vector2 uv = v1.UVs * w1 + v2.UVs * w2 + v3.UVs * w3;
+            color *= mTexture.Sample(uv);
 
             SetPixel(x, y, color);
         }
@@ -75,7 +79,7 @@ void Renderer::Render(const std::vector<Vertex> &vertices)
 {
     currentTime += ImGui::GetIO().DeltaTime;
 
-    mModel = Matrix4x4::TRS(0, Vector3(0, 0, currentTime * 3), 1);
+    mModel = Matrix4x4::TRS(0, Vector3(0, currentTime, currentTime * 3), 1);
     Matrix4x4::ViewMatrix(Vector3(0.f, 0.f, 2.f), 0, Vector3::UnitY(), mView);
     Matrix4x4::ProjectionMatrix((float) std::numbers::pi / 2, width / (float) height, 0.1f, 100.f, mProjection);
 
@@ -92,7 +96,6 @@ void Renderer::Render(const std::vector<Vertex> &vertices)
 
     for (size_t i = 0; i < vertices.size(); i++)
     {
-        // std::cout << i << std::endl;
         Vector3 p1 = transformed[i];
         Vector3 p2 = transformed[(i + 1) % vertices.size()];
         Vector3 p3 = transformed[(i + 2) % vertices.size()];
