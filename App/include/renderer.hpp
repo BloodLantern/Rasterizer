@@ -1,54 +1,45 @@
 #pragma once
 
+#include <vector>
+
 #include <matrix4x4.hpp>
 #include <vector2.hpp>
 #include <vector2i.hpp>
 
-#include <random>
-
 #include "vertex.hpp"
 
-constexpr unsigned int width = 8;
-constexpr unsigned int height = 12;
+constexpr unsigned int width = 800;
+constexpr unsigned int height = 600;
 
 class Renderer
 {
 private:
-    std::default_random_engine mRandomDevice;
-    std::uniform_real_distribution<float> mRandomFloat;
-
     unsigned int mTextureID;
 
-    Vector4 mColorBuffer[width][height];
-    float mDepthBuffer[width][height];
+    Vector4 mColorBuffer[width * height];
+    float mDepthBuffer[width * height];
 
-    Matrix4x4 mProjection;
     Matrix4x4 mView;
-    Matrix4x4 mModel;
-    Matrix4x4 mViewport;
+    Matrix4x4 mProjection;
+    Matrix4x4 mModel = Matrix4x4::Identity();
+
+    void CreateFramebuffer();
+    void UpdateFramebuffer();
+    void DestroyFramebuffer();
 
 public:
     Renderer();
     ~Renderer();
 
-    void SetProjectionMatrix(const Matrix4x4& projection);
-    void SetViewMatrix(const Matrix4x4& view);
-    void SetModelMatrix(const Matrix4x4& model);
-    void SetViewportMatrix(const Matrix4x4& viewport);
-    void SetViewportMatrix(const Vector2& position, const Vector2& size);
+    Vector3 ApplyRenderingPipeline(const Vector3& p);
 
-    void SetPixel(const Vector2i& position);
-    void SetPixel(const Vector2i& position, const Vector4& color);
+    void SetPixel(const uint32_t x, const uint32_t y);
+    void SetPixel(const uint32_t x, const uint32_t y, const Vector4& color);
 
-    void DrawLine(Vector2i p1, const Vector2i& p2);
-    void DrawLine(Vector2i p1, const Vector2i& p2, const Vector4& color);
+    void DrawTriangle(Vector3 p1, const Vector3 p2, const Vector3 p3, const Vertex& v1, const Vertex& v2, const Vertex& v3);
 
     // Draw a list of triangles
-    void DrawTriangles(Vertex* vertices, int vertexCount);
-
-    void CreateFramebuffer();
-    void UpdateFramebuffer();
-    void DestroyFramebuffer();
+    void Render(const std::vector<Vertex>& vertices);
 };
 
 /*

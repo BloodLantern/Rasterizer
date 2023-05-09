@@ -13,7 +13,7 @@ private:
 public:
     Scene();
     ~Scene();
-    void Update(const float deltaTime, Renderer& renderer);
+    void Update(Renderer& renderer);
 
     void SetImGuiContext(struct ImGuiContext* context);
     void ShowImGuiControls();

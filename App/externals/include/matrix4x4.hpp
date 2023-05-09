@@ -17,7 +17,7 @@ public:
     /// @brief Returns the identity matrix.
     ///        The identity matrix is a matrix with its diagonal
     ///        set to one and everything else set to zero.
-    static consteval Matrix4x4 Identity();
+    static Matrix4x4 Identity();
 
     /// @brief Creates a matrix with all its values set to this default value.
     constexpr Matrix4x4(const float defaultValue = 0.f)
@@ -144,6 +144,8 @@ public:
     /// @brief Creates a Translation-Rotation-Scaling (TRS) matrix from the given translation, rotation and scaling.
     [[nodiscard]]
     static Matrix4x4 TRS(const Vector3& translation, const Matrix4x4& rotation, const Vector3& scale);
+    static void ViewMatrix(const Vector3& eye, const Vector3& center, const Vector3& up, Matrix4x4& result);
+    static void ProjectionMatrix(const float fovY, const float aspectRatio, const float zNear, const float zFar, Matrix4x4& result);
 
     [[nodiscard]]
     constexpr const Vector4& operator[](const size_t row) const;

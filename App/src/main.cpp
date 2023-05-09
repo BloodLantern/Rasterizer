@@ -57,10 +57,9 @@ int main(int argc, char** argv)
     ImGui_ImplOpenGL3_Init("#version 130");
 
     {
-        Renderer renderer;
+        Renderer* renderer = new Renderer;
         Scene scene;
 
-        renderer.CreateFramebuffer();
 
         while (!glfwWindowShouldClose(window))
         {
@@ -73,10 +72,8 @@ int main(int argc, char** argv)
 
             ImGui::Begin("Test");
             ImGui::Text("Hello triangles");
-            renderer.UpdateFramebuffer();
+            scene.Update(*renderer);
             ImGui::End();
-
-            // Imgui stuff here
 
             // Rendering
             ImGui::Render();
@@ -96,7 +93,7 @@ int main(int argc, char** argv)
             glfwSwapBuffers(window);
         }
 
-        renderer.DestroyFramebuffer();
+        delete renderer;
     }
 
     // sceneUpdate(scene, 1.f / 60.f, renderer);

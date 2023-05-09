@@ -1,42 +1,42 @@
 #include "vertex.hpp"
 
 Vertex::Vertex(const Vector3& position)
-	: mPosition(position)
+	: Position(position)
 {
 }
 
 Vertex::Vertex(const Vector3& position, const Vector4& color)
-	: mPosition(position), mColor(color)
+	: Position(position), Color(color)
 {
 }
 
 Vertex::Vertex(const Vector3& position, const Vector4& color, const Vector3& normal, const Vector2 uv)
-	: mPosition(position), mColor(color), mNormal(normal), mUVs(uv)
+	: Position(position), Color(color), Normal(normal), UVs(uv)
 {
 }
 
 void Vertex::SetPosition(const Vector3& position)
 {
-	mPosition = position;
+	Position = position;
 }
 
 void Vertex::SetColor(const Vector4& color)
 {
-	mColor = color;
+	Color = color;
 }
 
 void Vertex::SetNormal(const Vector3& normal)
 {
-	mNormal = normal;
+	Normal = normal;
 }
 
 void Vertex::SetUV(const Vector2 uv)
 {
-	mUVs = uv;
+	UVs = uv;
 }
 
 void Vertex::SetPositionAndNormal(const Vector3& position)
 {
-	mPosition = position;
-	mNormal = position.Normalized();
+	Position = position;
+	Normal = position.Normalized();
 }

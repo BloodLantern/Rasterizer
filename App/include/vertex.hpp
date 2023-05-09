@@ -6,13 +6,12 @@
 
 class Vertex
 {
-private:
-    Vector3 mPosition;
-    Vector4 mColor;
-    Vector3 mNormal;
-    Vector2 mUVs;
-
 public:
+    Vector3 Position;
+    Vector4 Color;
+    Vector3 Normal;
+    Vector2 UVs;
+
     Vertex(const Vector3& position);
     Vertex(const Vector3& position, const Vector4& color);
     Vertex(const Vector3& position, const Vector4& color, const Vector3& normal, const Vector2 uv);
