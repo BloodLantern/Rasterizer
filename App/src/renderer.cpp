@@ -20,7 +20,7 @@ Vector3 Renderer::ApplyRenderingPipeline(const Vector3 &p)
 {
     Vector4 coords = Vector4(p.x, p.y, p.z, 1.0f);
 
-    Matrix4x4 mat = mProjection * mView * mModel;
+    Matrix4x4 mat = mProjection * mView * ModelMatrix;
     coords = coords * mat;
 
     coords /= coords.w;
@@ -93,12 +93,6 @@ void Renderer::DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3
 
 void Renderer::Render(const std::vector<Vertex> &vertices, const Texture& texture)
 {
-    mModel = Matrix4x4::TRS(
-        0,
-        Vector3(0),
-        1
-    );
-
     mCamera.Update();
 
     for (int x = 0; x < width; x++)
@@ -133,13 +127,34 @@ void Renderer::CreateFramebuffer()
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glEnable(GL_TEXTURE_2D);
 }
 
 void Renderer::UpdateFramebuffer()
 {
     glBindTexture(GL_TEXTURE_2D, mTextureID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, mColorBuffer);
-    ImGui::Image((ImTextureID) mTextureID, ImVec2(width, height));
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glBegin(GL_QUADS);
+    glColor4f(1, 1, 1, 1);
+
+    glTexCoord2f(0, 0);
+    glVertex2f(-1, 1);
+    glTexCoord2f(0, 1);
+    glVertex2f(-1, -1);
+    glTexCoord2f(1, 1);
+    glVertex2f(1, -1);
+    glTexCoord2f(1, 0);
+    glVertex2f(1, 1);
+
+    glEnd();
+    glFlush();
 }
 
 void Renderer::DestroyFramebuffer()

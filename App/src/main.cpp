@@ -26,7 +26,7 @@ int main(int, char**)
     if (!glfwInit())
         return 1;
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Rasterizer", nullptr, nullptr);;
+    GLFWwindow* window = glfwCreateWindow(width, height, "Rasterizer", NULL, NULL);
     if (window == nullptr)
         return 1;
 
@@ -49,16 +49,16 @@ int main(int, char**)
 
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 130");
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     {
         Renderer* renderer = new Renderer;
         Scene scene;
 
-
         while (!glfwWindowShouldClose(window))
         {
             glfwPollEvents();
+            glClear(GL_COLOR_BUFFER_BIT);
 
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
@@ -67,18 +67,13 @@ int main(int, char**)
 
             scene.ShowImGuiControls();
             
-            ImGui::Begin("Test");
-            ImGui::Text("%f FPS", 1.f / ImGui::GetIO().DeltaTime);
             scene.Update(*renderer);
-            ImGui::End();
 
             // Rendering
             ImGui::Render();
             int displayW, displayH;
             glfwGetFramebufferSize(window, &displayW, &displayH);
             glViewport(0, 0, displayW, displayH);
-
-            glClear(GL_COLOR_BUFFER_BIT);
 
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -92,6 +87,8 @@ int main(int, char**)
 
         delete renderer;
     }
+
+    glfwTerminate();
 
     return 0;
 }

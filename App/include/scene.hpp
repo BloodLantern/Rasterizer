@@ -16,6 +16,14 @@ public:
     void ShowImGuiControls();
 
 private:
+    std::string mTexturePath = "assets/gradient.png";
+    std::string mModelTexturePath = "assets/mountain_texture.png";
+    std::string mModelPath = "assets/mountain.obj";
+
+    Vector3 mWorldPosition = 0;
+    Vector3 mWorldRotation = 0;
+    Vector3 mWorldScale = 1;
+
     std::vector<Vertex> mVertices;
     Texture mTexture;
     Texture mModelTexture;

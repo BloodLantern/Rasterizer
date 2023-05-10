@@ -4,6 +4,13 @@
 
 Model::Model(const char *const filepath)
 {
+    Load(filepath);
+}
+
+void Model::Load(const char *const filepath)
+{
+    mVertices.clear();
+    
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;

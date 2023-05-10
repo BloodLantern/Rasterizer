@@ -16,13 +16,13 @@ class Renderer
 {
 private:
     unsigned int mTextureID;
+    unsigned int mReadFboBuffer;
 
     Vector4 mColorBuffer[width * height];
     float mDepthBuffer[width * height];
 
     Camera mCamera;
 
-    Matrix4x4 mModel = Matrix4x4::Identity();
     Matrix4x4 mView;
     Matrix4x4 mProjection;
 
@@ -31,6 +31,8 @@ private:
     void DestroyFramebuffer();
 
 public:
+    Matrix4x4 ModelMatrix = Matrix4x4::Identity();
+
     Renderer();
     ~Renderer();
 

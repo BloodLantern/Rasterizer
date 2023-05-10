@@ -19,10 +19,10 @@ private:
     float mNear = 0.1f;
     float mFar = 100.f;
 
-    float mFOV = (float) std::numbers::pi / 2;
+    float mFOV = (float) -std::numbers::pi / 2;
     Vector3 mUp = Vector3::UnitY();
-    Vector3 mPosition = Vector3(0.f, 1.7f, 0.9f);
-    Vector3 mLookAt = Vector3(0.f, -1.5f, 0.f);
+    Vector3 mPosition = Vector3(10.f, 20.f, -10.f);
+    Vector3 mLookAt = Vector3(4.f, 7.f, 0.f);
 
     Matrix4x4& mView;
     Matrix4x4& mProjection;
