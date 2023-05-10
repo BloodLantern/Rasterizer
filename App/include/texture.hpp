@@ -15,5 +15,5 @@ public:
 private:
     Vector2i mSize;
     Vector4* mPixels;
-    unsigned char* mStbImageData;
+    unsigned char* mStbImageData = nullptr;
 };

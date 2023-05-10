@@ -17,8 +17,10 @@ Texture::~Texture()
 
 void Texture::Load(const char *const filepath)
 {
-    stbi_image_free(mStbImageData);
+    if (mStbImageData)
+        stbi_image_free(mStbImageData);
     delete[] mPixels;
+    mPixels = nullptr;
     
     int nbrChannels;
     mStbImageData = stbi_load(filepath, &mSize.x, &mSize.y, &nbrChannels, 0);

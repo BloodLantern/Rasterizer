@@ -7,6 +7,8 @@
 #include "texture.hpp"
 #include "model.hpp"
 
+constexpr unsigned int MaxFilepathLength = 40;
+
 class Scene
 {
 public:
@@ -16,9 +18,9 @@ public:
     void ShowImGuiControls();
 
 private:
-    std::string mTexturePath = "assets/gradient.png";
-    std::string mModelTexturePath = "assets/mountain_texture.png";
-    std::string mModelPath = "assets/mountain.obj";
+    char mTexturePath[MaxFilepathLength] = "assets/gradient.png";
+    char mModelTexturePath[MaxFilepathLength] = "assets/mountain_texture.png";
+    char mModelPath[MaxFilepathLength] = "assets/mountain.obj";
 
     Vector3 mWorldPosition = 0;
     Vector3 mWorldRotation = 0;

@@ -3,9 +3,9 @@
 #include <imgui.h>
 
 Scene::Scene()
-    : mTexture(mTexturePath.data()),
-    mModelTexture(mModelTexturePath.data()),
-    mModel(mModelPath.data())
+    : mTexture(mTexturePath),
+    mModelTexture(mModelTexturePath),
+    mModel(mModelPath)
 {
     // Triangle vertices
     mVertices.push_back(Vertex(Vector3(-10.f, -10.f, 0.f), Vector4(1.f, 1.f, 1.f, 1.f),
@@ -33,15 +33,15 @@ void Scene::ShowImGuiControls()
     ImGui::Begin("Controls");
     ImGui::Text("%f FPS", 1.f / ImGui::GetIO().DeltaTime);
     ImGui::Checkbox("Show Triangle", &showTriangle);
-    ImGui::InputText("Triangle texture file path", mTexturePath.data(), mTexturePath.size());
+    ImGui::InputText("Triangle texture file path", mTexturePath, MaxFilepathLength);
     if (ImGui::Button("Load triangle texture"))
-        mTexture.Load(mTexturePath.data());
-    ImGui::InputText("3D model texture file path", mModelTexturePath.data(), mModelTexturePath.size());
+        mTexture.Load(mTexturePath);
+    ImGui::InputText("3D model texture file path", mModelTexturePath, MaxFilepathLength);
     if (ImGui::Button("Load 3D model texture"))
-        mModel.Load(mModelTexturePath.data());
-    ImGui::InputText("3D model file path", mModelPath.data(), mModelPath.size());
+        mModelTexture.Load(mModelTexturePath);
+    ImGui::InputText("3D model file path", mModelPath, MaxFilepathLength);
     if (ImGui::Button("Load 3D model"))
-        mModelTexture.Load(mModelTexturePath.data());
+        mModel.Load(mModelPath);
     ImGui::End();
 
     ImGui::Begin("World transformations");
