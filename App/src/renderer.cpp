@@ -1,14 +1,12 @@
 #include "renderer.hpp"
 
-#include <cassert>
-#include <numbers>
-#include <iostream>
 #include <algorithm>
 
 #include <imgui.h>
 #include <GLFW/glfw3.h>
 
 Renderer::Renderer()
+    : mCamera(width, height, mView, mProjection)
 {
     CreateFramebuffer();
 }
@@ -95,9 +93,13 @@ void Renderer::DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3
 
 void Renderer::Render(const std::vector<Vertex> &vertices, const Texture& texture)
 {
-    mModel = Matrix4x4::TRS(0, Vector3(0), 1);
-    Matrix4x4::ViewMatrix(Vector3(0.f, 0.f, 2.f), 0, Vector3::UnitY(), mView);
-    Matrix4x4::ProjectionMatrix((float) std::numbers::pi / 2, width / (float) height, mNear, mFar, mProjection);
+    mModel = Matrix4x4::TRS(
+        0,
+        Vector3(0),
+        1
+    );
+
+    mCamera.Update();
 
     for (int x = 0; x < width; x++)
         for (int y = 0; y < height; y++)
@@ -111,11 +113,11 @@ void Renderer::Render(const std::vector<Vertex> &vertices, const Texture& textur
     for (size_t i = 0; i < vertices.size(); i++)
         transformed[i].Position = ApplyRenderingPipeline(vertices[i].Position);
 
-    for (size_t i = 0; i < vertices.size(); i++)
+    for (size_t i = 0; i < vertices.size(); i += 3)
         DrawTriangle(
             transformed[i],
-            transformed[(i + 1) % transformed.size()],
-            transformed[(i + 2) % transformed.size()],
+            transformed[i + 1],
+            transformed[i + 2],
             texture
         );
 

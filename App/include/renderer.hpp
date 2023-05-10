@@ -2,12 +2,12 @@
 
 #include <vector>
 
-#include <matrix4x4.hpp>
 #include <vector2.hpp>
 #include <vector2i.hpp>
 
 #include "vertex.hpp"
 #include "texture.hpp"
+#include "camera.hpp"
 
 constexpr unsigned int width = 800;
 constexpr unsigned int height = 600;
@@ -20,12 +20,11 @@ private:
     Vector4 mColorBuffer[width * height];
     float mDepthBuffer[width * height];
 
-    float mNear = 0.1f;
-    float mFar = 100.f;
+    Camera mCamera;
 
+    Matrix4x4 mModel = Matrix4x4::Identity();
     Matrix4x4 mView;
     Matrix4x4 mProjection;
-    Matrix4x4 mModel = Matrix4x4::Identity();
 
     void CreateFramebuffer();
     void UpdateFramebuffer();

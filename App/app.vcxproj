@@ -20,6 +20,7 @@
     <ClCompile Include="externals\src\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="externals\src\stb_image.cpp" />
     <ClCompile Include="externals\src\tiny_obj_loader.cpp" />
+    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model.cpp" />
     <ClCompile Include="src\renderer.cpp" />
@@ -30,6 +31,7 @@
   <ItemGroup>
     <ClInclude Include="externals\src\ImGui\imstb_rectpack.h" />
     <ClInclude Include="externals\src\ImGui\imstb_truetype.h" />
+    <ClInclude Include="include\camera.hpp" />
     <ClInclude Include="include\model.hpp" />
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\scene.hpp" />
