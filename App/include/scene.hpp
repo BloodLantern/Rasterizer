@@ -4,17 +4,20 @@
 
 #include "vertex.hpp"
 #include "renderer.hpp"
+#include "texture.hpp"
+#include "model.hpp"
 
 class Scene
 {
-private:
-    std::vector<Vertex> mVertices;
-
 public:
     Scene();
-    ~Scene();
-    void Update(Renderer& renderer);
 
-    void SetImGuiContext(struct ImGuiContext* context);
+    void Update(Renderer& renderer);
     void ShowImGuiControls();
+
+private:
+    std::vector<Vertex> mVertices;
+    Texture mTexture;
+    Texture mModelTexture;
+    Model mModel;
 };

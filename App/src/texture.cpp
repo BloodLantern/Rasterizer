@@ -31,8 +31,8 @@ Texture::~Texture()
 
 Vector4& Texture::Sample(const Vector2 uv) const
 {
-    const int x = std::floor(uv.x * mSize.x);
-    const int y = std::floor(uv.y * mSize.y);
+    const int x = (int) std::floor(uv.x * mSize.x);
+    const int y = (int) std::floor(uv.y * mSize.y);
 
     return mPixels[x + y * mSize.x];
 }

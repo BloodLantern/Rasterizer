@@ -3,12 +3,12 @@
 #include <cassert>
 #include <numbers>
 #include <iostream>
+#include <algorithm>
 
 #include <imgui.h>
 #include <GLFW/glfw3.h>
 
 Renderer::Renderer()
-    : mTexture("assets/texture.jpeg")
 {
     CreateFramebuffer();
 }
@@ -34,28 +34,42 @@ Vector3 Renderer::ApplyRenderingPipeline(const Vector3 &p)
     );
 }
 
-void Renderer::SetPixel(const uint32_t x, const uint32_t y)
+void Renderer::SetPixel(const unsigned int x, const unsigned int y)
 {
     mColorBuffer[y * width + x] = 1;
 }
 
-void Renderer::SetPixel(const uint32_t x, const uint32_t y, const Vector4& color)
+void Renderer::SetPixel(const unsigned int x, const unsigned int y, const Vector4& color)
 {
     mColorBuffer[y * width + x] = color;
 }
 
-void Renderer::DrawTriangle(Vector3 p1, const Vector3 p2, const Vector3 p3, const Vertex& v1, const Vertex& v2, const Vertex& v3)
+void Renderer::DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Texture& texture)
 {
-    for (unsigned int x = 0; x < width; x++)
-        for (unsigned int y = 0; y < height; y++)
-        {
-            const float denominator = (p2.y - p3.y) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.y - p3.y);
+    const Vector2i min(
+        (int) std::clamp(std::min(std::min(v1.Position.x, v2.Position.x), v3.Position.x), 0.f, width - 1.f),
+        (int) std::clamp(std::min(std::min(v1.Position.y, v2.Position.y), v3.Position.y), 0.f, height - 1.f)
+    );
+    const Vector2i max(
+        (int) std::clamp(std::max(std::max(v1.Position.x, v2.Position.x), v3.Position.x), 0.f, width - 1.f),
+        (int) std::clamp(std::max(std::max(v1.Position.y, v2.Position.y), v3.Position.y), 0.f, height - 1.f)
+    );
 
-            const float w1 = ((p2.y - p3.y) * (x - p3.x) + (p3.x - p2.x) * (y - p3.y)) / denominator;
+    for (int x = min.x; x < max.x; x++)
+        for (int y = min.y; y < max.y; y++)
+        {
+            const float denominator = (v2.Position.y - v3.Position.y) * (v1.Position.x - v3.Position.x)
+                + (v3.Position.x - v2.Position.x) * (v1.Position.y - v3.Position.y);
+            if (denominator == 0)
+                continue;
+
+            const float w1 = ((v2.Position.y - v3.Position.y) * (x - v3.Position.x)
+                + (v3.Position.x - v2.Position.x) * (y - v3.Position.y)) / denominator;
             if (w1 < 0 || w1 > 1)
                 continue;
 
-            const float w2 = ((p3.y - p1.y) * (x - p3.x) + (p1.x - p3.x) * (y - p3.y)) / denominator;
+            const float w2 = ((v3.Position.y - v1.Position.y) * (x - v3.Position.x)
+                + (v1.Position.x - v3.Position.x) * (y - v3.Position.y)) / denominator;
             if (w2 < 0 || w2 > 1)
                 continue;
 
@@ -63,44 +77,47 @@ void Renderer::DrawTriangle(Vector3 p1, const Vector3 p2, const Vector3 p3, cons
             if (w3 < 0 || w3 > 1)
                 continue;
 
+            const unsigned int index = y * width + x;
+            const float depth = v1.Position.z * w1 + v2.Position.z * w2 + v3.Position.z * w3;
+            if (depth < mDepthBuffer[index])
+                mDepthBuffer[index] = depth;
+            else
+                continue;
+
             Vector4 color = v1.Color * w1 + v2.Color * w2 + v3.Color * w3;
 
             const Vector2 uv = v1.UVs * w1 + v2.UVs * w2 + v3.UVs * w3;
-            color *= mTexture.Sample(uv);
+            color *= texture.Sample(uv);
 
             SetPixel(x, y, color);
         }
 }
 
-float currentTime = 0.0f;
-
-void Renderer::Render(const std::vector<Vertex> &vertices)
+void Renderer::Render(const std::vector<Vertex> &vertices, const Texture& texture)
 {
-    currentTime += ImGui::GetIO().DeltaTime;
-
-    mModel = Matrix4x4::TRS(0, Vector3(0, currentTime, currentTime * 3), 1);
+    mModel = Matrix4x4::TRS(0, Vector3(0), 1);
     Matrix4x4::ViewMatrix(Vector3(0.f, 0.f, 2.f), 0, Vector3::UnitY(), mView);
-    Matrix4x4::ProjectionMatrix((float) std::numbers::pi / 2, width / (float) height, 0.1f, 100.f, mProjection);
+    Matrix4x4::ProjectionMatrix((float) std::numbers::pi / 2, width / (float) height, mNear, mFar, mProjection);
 
     for (int x = 0; x < width; x++)
         for (int y = 0; y < height; y++)
-            mColorBuffer[y * width + x] = 0;
+        {
+            unsigned int index = y * width + x;
+            mColorBuffer[index] = 0;
+            mDepthBuffer[index] = INFINITY;
+        }
 
-    std::vector<Vector3> transformed = std::vector<Vector3>(vertices.size());
+    std::vector<Vertex> transformed(vertices);
     for (size_t i = 0; i < vertices.size(); i++)
-    {
-        transformed[i] = ApplyRenderingPipeline(vertices[i].Position);
-    }
-
+        transformed[i].Position = ApplyRenderingPipeline(vertices[i].Position);
 
     for (size_t i = 0; i < vertices.size(); i++)
-    {
-        Vector3 p1 = transformed[i];
-        Vector3 p2 = transformed[(i + 1) % vertices.size()];
-        Vector3 p3 = transformed[(i + 2) % vertices.size()];
-
-        DrawTriangle(p1, p2, p3, vertices[i], vertices[(i + 1) % vertices.size()], vertices[(i + 2) % vertices.size()]);
-    }
+        DrawTriangle(
+            transformed[i],
+            transformed[(i + 1) % transformed.size()],
+            transformed[(i + 2) % transformed.size()],
+            texture
+        );
 
     UpdateFramebuffer();
 }
@@ -109,7 +126,9 @@ void Renderer::CreateFramebuffer()
 {
     glGenTextures(1, &mTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextureID);
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
@@ -118,18 +137,10 @@ void Renderer::UpdateFramebuffer()
 {
     glBindTexture(GL_TEXTURE_2D, mTextureID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, mColorBuffer);
-    ImGui::Image(ImTextureID(mTextureID), ImVec2(width, height));
+    ImGui::Image((ImTextureID) mTextureID, ImVec2(width, height));
 }
 
 void Renderer::DestroyFramebuffer()
 {
     glDeleteTextures(1, &mTextureID);
 }
-
-/*
-void rendererSetTexture(rendererImpl* renderer, float* colors32Bits, int width, int height)
-{
-    assert(renderer != nullptr);
-    // TODO(later): Store
-}
-*/

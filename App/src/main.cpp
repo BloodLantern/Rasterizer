@@ -11,12 +11,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-void PrintPPM(float* colorBuffer, int width, int height)
-{
-    // TODO: print ppm format
-}
-
-int main(int argc, char** argv)
+int main(int, char**)
 {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -70,8 +65,10 @@ int main(int argc, char** argv)
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
+            scene.ShowImGuiControls();
+            
             ImGui::Begin("Test");
-            ImGui::Text("Hello triangles");
+            ImGui::Text("%f FPS", 1.f / ImGui::GetIO().DeltaTime);
             scene.Update(*renderer);
             ImGui::End();
 
@@ -95,10 +92,6 @@ int main(int argc, char** argv)
 
         delete renderer;
     }
-
-    // sceneUpdate(scene, 1.f / 60.f, renderer);
-
-    // PrintPPM(colorBuffer, width, height);
 
     return 0;
 }

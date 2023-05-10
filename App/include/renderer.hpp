@@ -15,11 +15,13 @@ constexpr unsigned int height = 600;
 class Renderer
 {
 private:
-    Texture mTexture;
     unsigned int mTextureID;
 
     Vector4 mColorBuffer[width * height];
     float mDepthBuffer[width * height];
+
+    float mNear = 0.1f;
+    float mFar = 100.f;
 
     Matrix4x4 mView;
     Matrix4x4 mProjection;
@@ -35,20 +37,11 @@ public:
 
     Vector3 ApplyRenderingPipeline(const Vector3& p);
 
-    void SetPixel(const uint32_t x, const uint32_t y);
-    void SetPixel(const uint32_t x, const uint32_t y, const Vector4& color);
+    void SetPixel(const unsigned int x, const unsigned int y);
+    void SetPixel(const unsigned int x, const unsigned int y, const Vector4& color);
 
-    void DrawTriangle(Vector3 p1, const Vector3 p2, const Vector3 p3, const Vertex& v1, const Vertex& v2, const Vertex& v3);
+    void DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Texture& texture);
 
     // Draw a list of triangles
-    void Render(const std::vector<Vertex>& vertices);
+    void Render(const std::vector<Vertex>& vertices, const Texture& texture);
 };
-
-/*
-// Texture setup
-RENDERER_API void rendererSetTexture(rendererImpl* renderer, float* colors32Bits, int width, int height);
-
-struct ImGuiContext;
-RENDERER_API void rendererSetImGuiContext(rendererImpl* renderer, struct ImGuiContext* context);
-RENDERER_API void rendererShowImGuiControls(rendererImpl* renderer);
-*/

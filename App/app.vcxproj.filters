@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="externals\src\TinyObj\tiny_obj_loader.cpp" />
     <ClCompile Include="externals\src\Glad\glad.c" />
     <ClCompile Include="externals\src\ImGui\imgui.cpp" />
     <ClCompile Include="externals\src\ImGui\imgui_demo.cpp" />
@@ -15,6 +14,8 @@
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="externals\src\stb_image.cpp" />
     <ClCompile Include="src\texture.cpp" />
+    <ClCompile Include="externals\src\tiny_obj_loader.cpp" />
+    <ClCompile Include="src\model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\src\ImGui\imstb_rectpack.h" />
@@ -23,5 +24,6 @@
     <ClInclude Include="include\renderer.hpp" />
     <ClInclude Include="include\scene.hpp" />
     <ClInclude Include="include\texture.hpp" />
+    <ClInclude Include="include\model.hpp" />
   </ItemGroup>
 </Project>
