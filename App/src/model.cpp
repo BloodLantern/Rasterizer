@@ -2,6 +2,8 @@
 
 #include <tiny_obj_loader.h>
 
+#include <iostream>
+
 Model::Model(const char *const filepath)
 {
     Load(filepath);
@@ -9,20 +11,22 @@ Model::Model(const char *const filepath)
 
 void Model::Load(const char *const filepath)
 {
-    mVertices.clear();
-    
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
     std::string warn, err;
 
     if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath))
-        throw std::runtime_error(warn + err);
+    {
+        std::cerr << "Failed to load model: " << filepath << "\nTinyObj log: " << warn + err << std::endl;
+        return;
+    }
 
+    mVertices.clear();
+    
     for (const tinyobj::shape_t& shape : shapes)
         for (const tinyobj::index_t& index : shape.mesh.indices)
-        {
-            Vertex v(
+            mVertices.push_back(Vertex(
                 Vector3(
                     attrib.vertices[3 * index.vertex_index],
                     attrib.vertices[3 * index.vertex_index + 1],
@@ -36,10 +40,7 @@ void Model::Load(const char *const filepath)
                 ),
                 Vector2(
                     attrib.texcoords[2 * index.texcoord_index],
-                    attrib.texcoords[2 * index.texcoord_index + 1]
+                    1.f - attrib.texcoords[2 * index.texcoord_index + 1]
                 )
-            );
-
-            mVertices.push_back(v);
-        }
+            ));
 }

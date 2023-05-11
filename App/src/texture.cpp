@@ -11,19 +11,29 @@ Texture::Texture(const char *const filepath)
 
 Texture::~Texture()
 {
-    stbi_image_free(mStbImageData);
+    if (mStbImageData)
+        stbi_image_free(mStbImageData);
     delete[] mPixels;
 }
 
 void Texture::Load(const char *const filepath)
 {
-    if (mStbImageData)
-        stbi_image_free(mStbImageData);
-    delete[] mPixels;
-    mPixels = nullptr;
-    
     int nbrChannels;
-    mStbImageData = stbi_load(filepath, &mSize.x, &mSize.y, &nbrChannels, 0);
+    unsigned char* data = stbi_load(filepath, &mSize.x, &mSize.y, &nbrChannels, 0);
+    if (data)
+    {
+        if (mStbImageData)
+            stbi_image_free(mStbImageData);
+        delete[] mPixels;
+        mPixels = nullptr;
+
+        mStbImageData = data;
+    }
+    else
+    {
+        std::cerr << "Failed to load texture: " << filepath << std::endl;
+        return;
+    }
 
     mPixels = new Vector4[mSize.x * mSize.y];
 
