@@ -19,8 +19,10 @@ public:
 
 private:
     char mTexturePath[MaxFilepathLength] = "assets/gradient.png";
-    char mModelTexturePath[MaxFilepathLength] = "assets/mountain_texture.png";
-    char mModelPath[MaxFilepathLength] = "assets/mountain.obj";
+    char mModelTexturePath[MaxFilepathLength] = "assets/mountain/buildings_texture.png";
+    char mModelPath[MaxFilepathLength] = "assets/mountain/buildings.obj";
+    char mMountainModelTexturePath[MaxFilepathLength] = "assets/mountain/mountain_texture.png";
+    char mMountainModelPath[MaxFilepathLength] = "assets/mountain/mountain.obj";
 
     Vector3 mWorldPosition = 0;
     Vector3 mWorldRotation = 0;
@@ -28,6 +30,8 @@ private:
 
     std::vector<Vertex> mVertices;
     Texture mTexture;
+    Texture mMountainModelTexture;
+    Model mMountainModel;
     Texture mModelTexture;
     Model mModel;
 };

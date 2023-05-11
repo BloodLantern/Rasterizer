@@ -48,6 +48,8 @@ void Texture::Load(const char *const filepath)
                 nbrChannels == 4 ? mStbImageData[texOffset + 3] : 255.f
             ) / 255.f;
         }
+        
+    std::cout << "Successfully loaded texture: " << filepath << std::endl;
 }
 
 Vector4 &Texture::Sample(const Vector2 uv) const

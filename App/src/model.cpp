@@ -43,4 +43,6 @@ void Model::Load(const char *const filepath)
                     1.f - attrib.texcoords[2 * index.texcoord_index + 1]
                 )
             ));
+
+    std::cout << "Successfully loaded model: " << filepath << std::endl;
 }

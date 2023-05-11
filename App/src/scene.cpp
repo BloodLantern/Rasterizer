@@ -4,6 +4,8 @@
 
 Scene::Scene()
     : mTexture(mTexturePath),
+    mMountainModelTexture(mMountainModelTexturePath),
+    mMountainModel(mMountainModelPath),
     mModelTexture(mModelTexturePath),
     mModel(mModelPath)
 {
@@ -25,7 +27,9 @@ void Scene::Update(Renderer& renderer)
     if (showTriangle)
         renderer.Render(mVertices, mTexture);
     else
-        renderer.Render(mModel.GetVertices(), mModelTexture);
+    {
+        renderer.Render(mMountainModel.GetVertices(), mMountainModelTexture);
+    }
 }
 
 void Scene::ShowImGuiControls()
@@ -36,19 +40,25 @@ void Scene::ShowImGuiControls()
     ImGui::InputText("Triangle texture file path", mTexturePath, MaxFilepathLength);
     if (ImGui::Button("Load triangle texture"))
         mTexture.Load(mTexturePath);
-    ImGui::InputText("3D model texture file path", mModelTexturePath, MaxFilepathLength);
-    if (ImGui::Button("Load 3D model texture"))
+    ImGui::InputText("3D model 1 texture file path", mMountainModelTexturePath, MaxFilepathLength);
+    if (ImGui::Button("Load 3D model 1 texture"))
+        mMountainModelTexture.Load(mMountainModelTexturePath);
+    ImGui::InputText("3D model 1 file path", mMountainModelPath, MaxFilepathLength);
+    if (ImGui::Button("Load 3D model 1"))
+        mMountainModel.Load(mMountainModelPath);
+    ImGui::InputText("3D model 2 texture file path", mMountainModelTexturePath, MaxFilepathLength);
+    if (ImGui::Button("Load 3D model 2 texture"))
         mModelTexture.Load(mModelTexturePath);
-    ImGui::InputText("3D model file path", mModelPath, MaxFilepathLength);
-    if (ImGui::Button("Load 3D model"))
+    ImGui::InputText("3D model 2 file path", mModelPath, MaxFilepathLength);
+    if (ImGui::Button("Load 3D model 2"))
         mModel.Load(mModelPath);
     ImGui::End();
 
     ImGui::Begin("World transformations");
     ImGui::SliderFloat3("Position", &mWorldPosition.x, -20.f, 20.f);
-    ImGui::SliderAngle("Rotation X", &mWorldRotation.x, -180.f, 180.f);
-    ImGui::SliderAngle("Rotation Y", &mWorldRotation.y, -180.f, 180.f);
-    ImGui::SliderAngle("Rotation Z", &mWorldRotation.z, -180.f, 180.f);
+    ImGui::SliderAngle("Rotation X", &mWorldRotation.x);
+    ImGui::SliderAngle("Rotation Y", &mWorldRotation.y);
+    ImGui::SliderAngle("Rotation Z", &mWorldRotation.z);
     ImGui::SliderFloat3("Scale", &mWorldScale.x, -10.f, 10.f);
     ImGui::End();
 }

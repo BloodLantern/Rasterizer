@@ -58,16 +58,17 @@ void Renderer::DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3
         {
             const float denominator = (v2.Position.y - v3.Position.y) * (v1.Position.x - v3.Position.x)
                 + (v3.Position.x - v2.Position.x) * (v1.Position.y - v3.Position.y);
+            // Just in case, to avoid division by zero
             if (denominator == 0)
                 continue;
 
             const float w1 = ((v2.Position.y - v3.Position.y) * (x - v3.Position.x)
-                + (v3.Position.x - v2.Position.x) * (y - v3.Position.y)) / denominator;
+                + (v3.Position.x - v2.Position.x) * (y - v3.Position.y));
             if (w1 < 0 || w1 > 1)
                 continue;
 
             const float w2 = ((v3.Position.y - v1.Position.y) * (x - v3.Position.x)
-                + (v1.Position.x - v3.Position.x) * (y - v3.Position.y)) / denominator;
+                + (v1.Position.x - v3.Position.x) * (y - v3.Position.y));
             if (w2 < 0 || w2 > 1)
                 continue;
 
