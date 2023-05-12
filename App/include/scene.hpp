@@ -14,6 +14,8 @@ class Scene
 public:
     Scene();
 
+    void AddTriangle(const Vector3& p1, const Vector3& p2, const Vector3& p3);
+
     void Update(Renderer& renderer);
     void ShowImGuiControls();
 
@@ -26,9 +28,9 @@ private:
 
     Vector3 mWorldPosition = 0;
     Vector3 mWorldRotation = 0;
-    Vector3 mWorldScale = 1;
+    Vector3 mWorldScale = Vector3(1, 1, -1);
 
-    std::vector<Vertex> mVertices;
+    std::vector<Vertex> mTriangleVertices;
     Texture mTexture;
     Texture mMountainModelTexture;
     Model mMountainModel;

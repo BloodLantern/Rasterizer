@@ -10,23 +10,30 @@ Scene::Scene()
     mModel(mModelPath)
 {
     // Triangle vertices
-    mVertices.push_back(Vertex(Vector3(-10.f, -10.f, 0.f), Vector4(1.f, 1.f, 1.f, 1.f),
+    AddTriangle(Vector3(-10.f, -10.f, 0.f), Vector3(10.f, -10.f, 0.f), Vector3(0.f, 10.f, 0.f));
+    AddTriangle(Vector3(-10.f, -10.f, 0.f), Vector3(0.f, 10.f, 0.f), Vector3(-10.f, 10.f, 0.f));
+    AddTriangle(Vector3(10.f, -10.f, 0.f), Vector3(0.f, 10.f, 0.f), Vector3(10.f, 10.f, 0.f));
+}
+
+void Scene::AddTriangle(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3)
+{
+    mTriangleVertices.push_back(Vertex(p1, Vector4(1.f, 1.f, 1.f, 1.f),
         Vector3(0.f, 0.f, 0.f), Vector2(0.f, 0.f)));
-    mVertices.push_back(Vertex(Vector3(10.f, -10.f, 0.f), Vector4(1.f, 1.f, 1.f, 1.f),
+    mTriangleVertices.push_back(Vertex(p2, Vector4(1.f, 1.f, 1.f, 1.f),
         Vector3(0.f, 0.f, 0.f), Vector2(1.f, 0.f)));
-    mVertices.push_back(Vertex(Vector3(0.f, 10.f, 0.f), Vector4(1.f, 1.f, 1.f, 1.f),
+    mTriangleVertices.push_back(Vertex(p3, Vector4(1.f, 1.f, 1.f, 1.f),
         Vector3(0.f, 0.f, 0.f), Vector2(0.5f, 1.f)));
 }
 
-bool showTriangle = false;
+bool showTriangles = false;
 
 void Scene::Update(Renderer& renderer)
 {
     renderer.ModelMatrix = Matrix4x4::TRS(mWorldPosition, mWorldRotation, mWorldScale);
 
     renderer.PreRender();
-    if (showTriangle)
-        renderer.Render(mVertices, mTexture);
+    if (showTriangles)
+        renderer.Render(mTriangleVertices, mTexture);
     else
     {
         renderer.Render(mMountainModel.GetVertices(), mMountainModelTexture);
@@ -39,7 +46,7 @@ void Scene::ShowImGuiControls()
 {
     ImGui::Begin("General");
     ImGui::Text("%f FPS", 1.f / ImGui::GetIO().DeltaTime);
-    ImGui::Checkbox("Show Triangle", &showTriangle);
+    ImGui::Checkbox("Show Triangles", &showTriangles);
     ImGui::InputText("Triangle texture file path", mTexturePath, MaxFilepathLength);
     if (ImGui::Button("Load triangle texture"))
         mTexture.Load(mTexturePath);

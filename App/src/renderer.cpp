@@ -62,30 +62,30 @@ void Renderer::DrawTriangles(const Vertex& v1, const Vertex& v2, const Vertex& v
             if (denominator == 0)
                 continue;
 
-            const float w1 = ((v2.Position.y - v3.Position.y) * (x - v3.Position.x)
+            const float weight1 = ((v2.Position.y - v3.Position.y) * (x - v3.Position.x)
                 + (v3.Position.x - v2.Position.x) * (y - v3.Position.y)) / denominator;
-            if (w1 < 0)
+            if (weight1 < 0)
                 continue;
 
-            const float w2 = ((v3.Position.y - v1.Position.y) * (x - v3.Position.x)
+            const float weight2 = ((v3.Position.y - v1.Position.y) * (x - v3.Position.x)
                 + (v1.Position.x - v3.Position.x) * (y - v3.Position.y)) / denominator;
-            if (w2 < 0)
+            if (weight2 < 0)
                 continue;
 
-            const float w3 = 1 - w1 - w2;
-            if (w3 < 0)
+            const float weight3 = 1 - weight1 - weight2;
+            if (weight3 < 0)
                 continue;
 
             const unsigned int index = y * width + x;
-            const float depth = v1.Position.z * w1 + v2.Position.z * w2 + v3.Position.z * w3;
+            const float depth = v1.Position.z * weight1 + v2.Position.z * weight2 + v3.Position.z * weight3;
             if (depth < mDepthBuffer[index])
                 mDepthBuffer[index] = depth;
             else
                 continue;
 
-            Vector4 color = v1.Color * w1 + v2.Color * w2 + v3.Color * w3;
+            Vector4 color = v1.Color * weight1 + v2.Color * weight2 + v3.Color * weight3;
 
-            const Vector2 uv = v1.UVs * w1 + v2.UVs * w2 + v3.UVs * w3;
+            const Vector2 uv = v1.UVs * weight1 + v2.UVs * weight2 + v3.UVs * weight3;
             color *= texture.Sample(uv);
 
             SetPixel(x, y, color);
