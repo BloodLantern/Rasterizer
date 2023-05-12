@@ -42,15 +42,15 @@ void Renderer::SetPixel(const unsigned int x, const unsigned int y, const Vector
     mColorBuffer[y * width + x] = color;
 }
 
-void Renderer::DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Texture& texture)
+void Renderer::DrawTriangles(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Texture& texture)
 {
     const Vector2i min(
-        (int) std::clamp(std::min(std::min(v1.Position.x, v2.Position.x), v3.Position.x), 0.f, width - 1.f),
-        (int) std::clamp(std::min(std::min(v1.Position.y, v2.Position.y), v3.Position.y), 0.f, height - 1.f)
+        (int) std::clamp(std::min(std::min(v1.Position.x, v2.Position.x), v3.Position.x), 0.f, (float) width),
+        (int) std::clamp(std::min(std::min(v1.Position.y, v2.Position.y), v3.Position.y), 0.f, (float) height)
     );
     const Vector2i max(
-        (int) std::clamp(std::max(std::max(v1.Position.x, v2.Position.x), v3.Position.x), 0.f, width - 1.f),
-        (int) std::clamp(std::max(std::max(v1.Position.y, v2.Position.y), v3.Position.y), 0.f, height - 1.f)
+        (int) std::clamp(std::max(std::max(v1.Position.x, v2.Position.x), v3.Position.x), 0.f, (float) width),
+        (int) std::clamp(std::max(std::max(v1.Position.y, v2.Position.y), v3.Position.y), 0.f, (float) height)
     );
 
     for (int x = min.x; x < max.x; x++)
@@ -63,17 +63,17 @@ void Renderer::DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3
                 continue;
 
             const float w1 = ((v2.Position.y - v3.Position.y) * (x - v3.Position.x)
-                + (v3.Position.x - v2.Position.x) * (y - v3.Position.y));
-            if (w1 < 0 || w1 > 1)
+                + (v3.Position.x - v2.Position.x) * (y - v3.Position.y)) / denominator;
+            if (w1 < 0)
                 continue;
 
             const float w2 = ((v3.Position.y - v1.Position.y) * (x - v3.Position.x)
-                + (v1.Position.x - v3.Position.x) * (y - v3.Position.y));
-            if (w2 < 0 || w2 > 1)
+                + (v1.Position.x - v3.Position.x) * (y - v3.Position.y)) / denominator;
+            if (w2 < 0)
                 continue;
 
             const float w3 = 1 - w1 - w2;
-            if (w3 < 0 || w3 > 1)
+            if (w3 < 0)
                 continue;
 
             const unsigned int index = y * width + x;
@@ -92,7 +92,7 @@ void Renderer::DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3
         }
 }
 
-void Renderer::Render(const std::vector<Vertex> &vertices, const Texture& texture)
+void Renderer::PreRender()
 {
     mCamera.Update();
 
@@ -103,19 +103,25 @@ void Renderer::Render(const std::vector<Vertex> &vertices, const Texture& textur
             mColorBuffer[index] = 0;
             mDepthBuffer[index] = INFINITY;
         }
+}
 
+void Renderer::Render(const std::vector<Vertex> &vertices, const Texture &texture)
+{
     std::vector<Vertex> transformed(vertices);
     for (size_t i = 0; i < vertices.size(); i++)
         transformed[i].Position = ApplyRenderingPipeline(vertices[i].Position);
 
     for (size_t i = 0; i < vertices.size(); i += 3)
-        DrawTriangle(
+        DrawTriangles(
             transformed[i],
             transformed[i + 1],
             transformed[i + 2],
             texture
         );
+}
 
+void Renderer::PostRender()
+{
     UpdateFramebuffer();
 }
 

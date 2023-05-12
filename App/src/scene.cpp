@@ -24,17 +24,20 @@ void Scene::Update(Renderer& renderer)
 {
     renderer.ModelMatrix = Matrix4x4::TRS(mWorldPosition, mWorldRotation, mWorldScale);
 
+    renderer.PreRender();
     if (showTriangle)
         renderer.Render(mVertices, mTexture);
     else
     {
         renderer.Render(mMountainModel.GetVertices(), mMountainModelTexture);
+        renderer.Render(mModel.GetVertices(), mModelTexture);
     }
+    renderer.PostRender();
 }
 
 void Scene::ShowImGuiControls()
 {
-    ImGui::Begin("Controls");
+    ImGui::Begin("General");
     ImGui::Text("%f FPS", 1.f / ImGui::GetIO().DeltaTime);
     ImGui::Checkbox("Show Triangle", &showTriangle);
     ImGui::InputText("Triangle texture file path", mTexturePath, MaxFilepathLength);
@@ -46,7 +49,7 @@ void Scene::ShowImGuiControls()
     ImGui::InputText("3D model 1 file path", mMountainModelPath, MaxFilepathLength);
     if (ImGui::Button("Load 3D model 1"))
         mMountainModel.Load(mMountainModelPath);
-    ImGui::InputText("3D model 2 texture file path", mMountainModelTexturePath, MaxFilepathLength);
+    ImGui::InputText("3D model 2 texture file path", mModelTexturePath, MaxFilepathLength);
     if (ImGui::Button("Load 3D model 2 texture"))
         mModelTexture.Load(mModelTexturePath);
     ImGui::InputText("3D model 2 file path", mModelPath, MaxFilepathLength);

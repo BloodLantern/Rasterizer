@@ -88,6 +88,11 @@ int main(int, char**)
         delete renderer;
     }
 
+
+    ImGui_ImplGlfw_Shutdown();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui::DestroyContext();
+    
     glfwTerminate();
 
     return 0;

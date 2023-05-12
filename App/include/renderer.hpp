@@ -16,7 +16,6 @@ class Renderer
 {
 private:
     unsigned int mTextureID;
-    unsigned int mReadFboBuffer;
 
     Vector4 mColorBuffer[width * height];
     float mDepthBuffer[width * height];
@@ -41,8 +40,9 @@ public:
     void SetPixel(const unsigned int x, const unsigned int y);
     void SetPixel(const unsigned int x, const unsigned int y, const Vector4& color);
 
-    void DrawTriangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Texture& texture);
+    void DrawTriangles(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Texture& texture);
 
-    // Draw a list of triangles
+    void PreRender();
     void Render(const std::vector<Vertex>& vertices, const Texture& texture);
+    void PostRender();
 };
